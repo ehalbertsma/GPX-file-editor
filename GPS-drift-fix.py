@@ -10,7 +10,7 @@ import trackpoint
 fv = open('Morning_Run.gpx','r',encoding='utf-8')
 fv2 = open('Morning_Run2.gpx','w',encoding='utf-8')
 
-length = 12941
+length = 12941 #number of lines in the Morning Run file
 count=0
 
 dlat = -(43.4897950-43.4830430) #divide by avg???
