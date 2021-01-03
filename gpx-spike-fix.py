@@ -8,9 +8,10 @@ Created on 2020 M12 27
 import sys
 from math import sqrt
 
-filename = 'workingDir/Afternoon_Run.gpx' # name of file
-length = 12941 # number of lines in the Morning Run file
-count=0 # dummy variable
+# Imported File Fields
+filename = 'workingDir/Night_run.gpx' # name of file
+eleflag, hrflag, cadflag, pwrflag = True, False, False, False
+
 
 fv = open(filename,'r',encoding='utf-8')
 fv2 = open('outputDir/Run2.gpx','w',encoding='utf-8')
@@ -48,21 +49,27 @@ while fv.readline():
     if line == '  </trkseg>\n':
         break 
 
-    latlon=line.split('"') # latlon needs format
+    latlon = line.split('"') # latlon needs format
     print(latlon)
     
     
-    lat= float(latlon[1])
-    lon= float(latlon[3])
+    lat = float(latlon[1])
+    lon = float(latlon[3])
     
-    ele=fv.readline() # elevation no format
-    time=fv.readline() # time no format
-    
+    if eleflag:
+        ele = fv.readline() # elevation no format
+
+    time = fv.readline() # time no format
     fv.readline() # <extensions>
     fv.readline() #  <gpxtpx:TrackPointExtension>
     
-    # hr=fv.readline() # hr
-    cad = fv.readline() # cad
+    if hrflag:
+        hr=fv.readline() # hr
+    if cadflag:
+        cad = fv.readline() # cad
+    if pwrflag:
+        pwr = fv.readline() # power
+    
     
     fv.readline() #  </gpxtpx:TrackPointExtension>
     fv.readline() # </extensions>
@@ -72,17 +79,18 @@ while fv.readline():
     track_point = {
         'latitude': lat,
         'longitude': lon,
-        'elevation': ele,
+        'elevation': ele if eleflag else None,
         'time': time,
-        # 'hr': hr,
-        'cad': cad
+        'hr': hr if hrflag else None,
+        'cad': cad if cadflag else None,
+        'pwr': pwr if pwrflag else None
     }
     
     trkptlist.append(track_point)
     
 
 spikeindex = list()
-epsilon = 2.0e-4
+epsilon = 2.5e-4
 for i in range(len(trkptlist)-1):
     currentnorm = norm( trkptlist[i],trkptlist[i+1] )
     if currentnorm > epsilon:
@@ -91,12 +99,17 @@ for i in range(len(trkptlist)-1):
     if currentnorm < epsilon:
 
         fv2.write('   <trkpt lat="{}" lon="{}">\n'.format(trkptlist[i]['latitude'],trkptlist[i]['longitude']))
-        fv2.write(trkptlist[i]['elevation'])
+        if eleflag:
+            fv2.write(trkptlist[i]['elevation'])
         fv2.write(trkptlist[i]['time'])
         fv2.write("    <extensions>\n")
         fv2.write("     <gpxtpx:TrackPointExtension>\n")
-        # fv2.write(trkpt['hr'])
-        fv2.write(trkptlist[i]['cad'])
+        if hrflag:
+            fv2.write(trkpt['hr'])
+        if cadflag:
+            fv2.write(trkptlist[i]['cad'])
+        if pwrflag:
+            fv2.write(trkptlist[i]['pwr'])
         fv2.write("     </gpxtpx:TrackPointExtension>\n")
         fv2.write("    </extensions>\n")
         fv2.write("   </trkpt>\n")
