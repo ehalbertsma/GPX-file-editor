@@ -19,6 +19,12 @@ Algorithm:
 
 """
 
+
+
+
+from ast import Return
+
+
 def search_trackpointlist(trkptlist, timestamp, i=0):
 
 
@@ -87,5 +93,64 @@ def validate_replace_data(trkptlist1, trkptlist2):
 
     return index_list
                 
+def find_gap(trkptlist, mode=0,epsilon=0.0001):
+    """
+    modes: 0=return timestamps, 1=return epsilon
+    """
+
+    deltamax = 0
+    deltai = -1
+
+    for i in range(len(trkptlist)-1):
         
+        lat1 = trkptlist[i].latitude
+        lat2 = trkptlist[i+1].latitude
+        lon1 = trkptlist[i].longitude
+        lon2 = trkptlist[i+1].longitude
+
+        delta2 = (lat2-lat1)**2 + (lon2-lon1)**2
+        
+        if deltamax < delta2:
+            deltamax = delta2
+            deltai = i
+
+    if mode==0:
+        return (trkptlist[deltai].time, trkptlist[deltai+1].time)
+    elif mode==1:
+        return deltamax
+    else:
+        print("wrong mode given, choose 0 or 1")
+
+def fix_pause(trkptlist1, trkptlist2):
+
+    """
+    trkptlist1: paused file
+    trkptlist2: donor file
+    future improvement: recusively apply the algorithm until the file meets a maximum epsilon
+    """
+
+    timestamps = find_gap(trkptlist1)
+
+    startindex1 = search_trackpointlist(trkptlist1,timestamps[0])
+    startindex2 = search_trackpointlist(trkptlist2,timestamps[0])
+    endindex1 = search_trackpointlist(trkptlist1,timestamps[1])
+    endindex2 = search_trackpointlist(trkptlist2,timestamps[1])
+
+    print(trkptlist2[startindex2].time)
+    print(trkptlist2[endindex2].time)
+
+    trkptlist3 = trkptlist1[0:startindex1] # IF THIS DOESN'T WORK TRY COPY
+    #print(trkptlist3[startindex1-2:startindex1-1])
+
+    for i in range(startindex2,endindex2):
+        trkptlist3.append(trkptlist2[i])
+    for i in range(endindex1,len(trkptlist1)):
+        trkptlist3.append(trkptlist1[i])
+
+    return trkptlist3
+
+
+
+    
+
 
