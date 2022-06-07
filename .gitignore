@@ -1,3 +1,7 @@
 *.gpx
 *.fit
 *.vscode
+*.json
+*.code-workspace
+__pycache__
+*.pyc
