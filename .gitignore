@@ -2,6 +2,9 @@
 *.fit
 *.vscode
 *.json
+*.geojson
+*.swp
 *.code-workspace
-__pycache__
+__pycache__/
 *.pyc
+*.spam
