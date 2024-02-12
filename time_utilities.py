@@ -89,15 +89,17 @@ def add_non_dummy_times(trkptlist, timestamplist):
     length_trkptlist = len(trkptlist)
     length_timestamplist = len(timestamplist)
 
+    # check for errors
     if length_trkptlist < length_timestamplist:
         raise IndexError("Need at least as many GPS points as timestamps.")
 
     print(f"""Matching {length_timestamplist} timestamps to {length_trkptlist} GPS points.
 Timestamp start: {timestamplist[0]}
-Timestamp end:   {timestamplist[length_trkptlist]}          
+Timestamp end:   {timestamplist[-1]}          
 """)
 
     for i in range(length_trkptlist):
+    
 
         dates = timestamplist[i].split("T")[0].split("-")
         times = timestamplist[i].split("T")[1].split(":")

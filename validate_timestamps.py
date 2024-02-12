@@ -12,7 +12,7 @@ import fileIO
 def compare_trkpt(trkptlist,verbose=False):
     count_fails = 0
     count_success = 0
-    for i in range(len(trkptlist)-1):
+    for i in range(len(trkptlist)-2):
         trkpt1 = trkptlist[i]
         trkpt2 = trkptlist[i+1]
 

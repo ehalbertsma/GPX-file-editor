@@ -56,10 +56,12 @@ def find_gap(trkptlist, mode=0,epsilon=0.0001):
             deltamax = delta2
             deltai = i
 
+    deltai += 1 # grab the point after the gap??
+
     if mode==0:
         return deltamax
     elif mode==1:
-        return (trkptlist[deltai].disp_time(), trkptlist[deltai+1].disp_time())
+        return (trkptlist[deltai].disp_datetime(), trkptlist[deltai+1].disp_datetime())
     if mode==2:
         return (trkptlist[deltai].latitude, trkptlist[deltai].longitude), (trkptlist[deltai+1].latitude, trkptlist[deltai+1].longitude)
     else:
